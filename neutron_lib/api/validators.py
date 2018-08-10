@@ -733,7 +733,7 @@ def _validate_dict_item(key, key_validator, data):
         return val_func(data.get(key), val_params)
 
 
-def validate_dict(data, key_specs=None):
+def validate_dict(data, key_specs=None, allow_unexpected_keys=False):
     """Validate data is a dict optionally containing a specific set of keys.
 
     :param data: The data to validate.
@@ -762,7 +762,7 @@ def validate_dict(data, key_specs=None):
 
     # Check whether unexpected keys are supplied in data
     unexpected_keys = [key for key in data if key not in key_specs]
-    if unexpected_keys:
+    if not allow_unexpected_keys and unexpected_keys:
         msg = _("Unexpected keys supplied: %s") % ', '.join(unexpected_keys)
         LOG.debug(msg)
         return msg
@@ -776,7 +776,7 @@ def validate_dict(data, key_specs=None):
             return msg
 
 
-def validate_dict_or_none(data, key_specs=None):
+def validate_dict_or_none(data, key_specs=None, allow_unexpected_keys=False):
     """Validate data is None or a dict containing a specific set of keys.
 
     :param data: The data to validate.
@@ -787,10 +787,10 @@ def validate_dict_or_none(data, key_specs=None):
     why data is not valid.
     """
     if data is not None:
-        return validate_dict(data, key_specs)
+        return validate_dict(data, key_specs, allow_unexpected_keys)
 
 
-def validate_dict_or_empty(data, key_specs=None):
+def validate_dict_or_empty(data, key_specs=None, allow_unexpected_keys=False):
     """Validate data is {} or a dict containing a specific set of keys.
 
     :param data: The data to validate.
@@ -801,10 +801,10 @@ def validate_dict_or_empty(data, key_specs=None):
     why data is not valid.
     """
     if data != {}:
-        return validate_dict(data, key_specs)
+        return validate_dict(data, key_specs, allow_unexpected_keys)
 
 
-def validate_dict_or_nodata(data, key_specs=None):
+def validate_dict_or_nodata(data, key_specs=None, allow_unexpected_keys=False):
     """Validate no data or a dict containing a specific set of keys.
 
     :param data: The data to validate. May be None.
@@ -815,7 +815,7 @@ def validate_dict_or_nodata(data, key_specs=None):
     why data is not valid.
     """
     if data:
-        return validate_dict(data, key_specs)
+        return validate_dict(data, key_specs, allow_unexpected_keys)
 
 
 def validate_non_negative(data, valid_values=None):
